@@ -38,8 +38,8 @@ public class OnlinerTest {
 	@DataProvider(name = "browserDataProvider")
 	Object[][] getBrowsers() {
 		return new Object[][]{
-			//{new FirefoxBrowser()},
-			//{new ChromeBrowser()},
+			{new FirefoxBrowser()},
+			{new ChromeBrowser()},
 			{new IEBrowser()}
 		};
 	}
