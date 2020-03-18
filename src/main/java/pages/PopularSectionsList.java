@@ -17,17 +17,12 @@ public class PopularSectionsList {
 	private final static String itemsXpath = "//ul[contains(@class, 'project-navigation__list')]//a[contains(@class, 'project-navigation__link')]";
 
 	/**
-	 * List of elements of popular sections list
-	 */
-	private List<WebElement> popularSections;
-
-	/**
 	 * Get List of elements of popular sections list
 	 *
 	 * @return List of elements of popular sections list
 	 */
 	public List<WebElement> getList() {
-		return popularSections;
+		return Browser.getDriver().findElements(By.xpath(itemsXpath));
 	}
 
 	/**
@@ -42,10 +37,6 @@ public class PopularSectionsList {
 
 	/**
 	 * Constructor
-	 *
-	 * @param browser Browser with loaded onliner's main page
 	 */
-	public PopularSectionsList(Browser browser) {
-		popularSections = browser.getDriver().findElements(By.xpath(itemsXpath));
-	}
+	public PopularSectionsList() {}
 }

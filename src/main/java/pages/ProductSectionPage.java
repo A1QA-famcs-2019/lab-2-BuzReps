@@ -4,17 +4,29 @@ import driver.Browser;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+/**
+ * Class for interacting with section page
+ */
 public class ProductSectionPage {
 
-	public final static String sectionTitleXpath = "//h1[contains(@class, 'schema-header__title')]";
+	/**
+	 * Section title element xpath
+	 */
+	public final static String sectionTitleXpath = "//div[@class='schema-header']//*[@class='schema-header__title']";
 
-	private WebElement sectionTitle;
-
-	public ProductSectionPage(Browser browser) {
-		sectionTitle = browser.getDriver().findElement(By.xpath(sectionTitleXpath));
+	/**
+	 * Constructor
+	 */
+	public ProductSectionPage() {
 	}
 
+	/**
+	 * Get section title text
+	 *
+	 * @return section title text
+	 */
 	public String sectionTitleText() {
+		WebElement sectionTitle = Browser.getDriver().findElement(By.xpath(sectionTitleXpath));
 		return sectionTitle.getText();
 	}
 

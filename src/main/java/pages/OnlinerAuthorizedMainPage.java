@@ -2,6 +2,7 @@ package pages;
 
 import driver.Browser;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -20,31 +21,13 @@ public class OnlinerAuthorizedMainPage {
 	/**
 	 * XPath for logout button
 	 */
-	public static final String logoutButtonXpath = "//div[@class='b-top-profile__logout']//a[contains(@class, 'b-top-profile__link')]";
-
-	private Browser browser;
-
-	/**
-	 * Button for logging out
-	 */
-	private WebElement logoutButton;
-
-	/**
-	 * Button for unfolding user menu
-	 */
-	private WebElement userMenuButton;
+	public static final String logoutButtonXpath = "//div[@class='b-top-profile__header']//div[@class='b-top-profile__logout']//a[contains(@class, 'b-top-profile__link')]";
 
 	/**
 	 * Constructor
-	 *
-	 * @param browser Browser with loaded onliner's main page with authorized user
 	 */
-	public OnlinerAuthorizedMainPage(Browser browser) {
-		this.browser = browser;
-		userMenuButton = browser.getDriver().findElement(By.xpath(userMenuUnfoldButtonXpath));
-		logoutButton = browser.getDriver().findElement(By.xpath(logoutButtonXpath));
+	public OnlinerAuthorizedMainPage() {
 	}
-
 
 	/**
 	 * Wait until unfold button is visible
@@ -52,15 +35,28 @@ public class OnlinerAuthorizedMainPage {
 	 * @param timeInSeconds Max amount of seconds to wait
 	 */
 	public void waitUntilUserMenuIsVisible(int timeInSeconds) {
-		WebDriverWait wait = new WebDriverWait(browser.getDriver(), timeInSeconds);
-		WebElement element = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(userMenuUnfoldButtonXpath)));
+		WebDriverWait wait = new WebDriverWait(Browser.getDriver(), timeInSeconds);
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath(userMenuUnfoldButtonXpath)));
 	}
 
+	/**
+	 * Get 'unfold user menu' button
+	 *
+	 * @return Button element or null in case of failure.
+	 */
+	public WebElement getUnfoldUserMenuButton() {
+		try {
+			return Browser.getDriver().findElement(By.xpath(userMenuUnfoldButtonXpath));
+		} catch (Exception e) {
+			return null;
+		}
+	}
 
 	/**
 	 * Click button that unfolds user profile
 	 */
 	public void clickUnfoldUserMenuButton() {
+		WebElement userMenuButton = Browser.getDriver().findElement(By.xpath(userMenuUnfoldButtonXpath));
 		userMenuButton.click();
 	}
 
@@ -69,6 +65,7 @@ public class OnlinerAuthorizedMainPage {
 	 * Click logout button
 	 */
 	public void clickLogoutButton() {
+		WebElement logoutButton = Browser.getDriver().findElement(By.xpath(logoutButtonXpath));
 		logoutButton.click();
 	}
 

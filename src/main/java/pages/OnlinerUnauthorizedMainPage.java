@@ -20,23 +20,29 @@ public class OnlinerUnauthorizedMainPage {
 	public static final String loginFormButtonXpath = "//div[contains(@class,'auth-bar__item--text')]";
 
 	/**
-	 * Button for user logging in
+	 * Constructor
 	 */
-	private WebElement loginButton;
+	public OnlinerUnauthorizedMainPage() {
+	}
 
 	/**
-	 * Constructor
+	 * Get login button element
 	 *
-	 * @param browser Browser with loaded onliner's main page with unauthorized user
+	 * @return Login button element or null in case of failure.
 	 */
-	public OnlinerUnauthorizedMainPage(Browser browser) {
-		this.loginButton = browser.getDriver().findElement(By.xpath(loginFormButtonXpath));
+	public WebElement getLoginFormButton() {
+		try {
+			return Browser.getDriver().findElement(By.xpath(loginFormButtonXpath));
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	/**
 	 * Click "Open login form" button
 	 */
 	public void clickLoginFormButton() {
+		WebElement loginButton = Browser.getDriver().findElement(By.xpath(loginFormButtonXpath));
 		loginButton.click();
 	}
 }

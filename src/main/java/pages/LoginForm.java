@@ -4,7 +4,6 @@ import driver.Browser;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-
 /**
  * Class for interacting with onliner's main page login form
  */
@@ -31,39 +30,18 @@ public class LoginForm {
 	private final static String passwordFieldXPath = "//div[contains(@class,'auth-form__line')]//input[@type=\"password\"]";
 
 	/**
-	 * Login field
-	 */
-	private WebElement loginTextField;
-
-	/**
-	 * Password field
-	 */
-	private WebElement passwordTextField;
-
-	/**
-	 * Button for logging in
-	 */
-	private WebElement loginButton;
-
-	/**
-	 * Background that covers main page
-	 */
-	private WebElement loginFormBackground;
-
-	/**
 	 * loginForm constructor
-	 *
-	 * @param browser Browser with loaded login form
 	 */
-	public LoginForm(Browser browser) {
-		loginTextField = browser.getDriver().findElement(By.xpath(loginTextFieldXPath));
-		passwordTextField = browser.getDriver().findElement(By.xpath(passwordFieldXPath));
-		loginButton = browser.getDriver().findElement(By.xpath(loginButtonXPath));
-		loginFormBackground = browser.getDriver().findElement(By.xpath(loginFormBackgroundXpath));
+	public LoginForm() {
 	}
 
+	/**
+	 * Get form background element
+	 *
+	 * @return Form background element
+	 */
 	public WebElement getLoginFormBackground() {
-		return loginFormBackground;
+		return Browser.getDriver().findElement(By.xpath(loginFormBackgroundXpath));
 	}
 
 	/**
@@ -73,6 +51,8 @@ public class LoginForm {
 	 * @param password user password
 	 */
 	public void writeCredentials(String login, String password) {
+		WebElement loginTextField = Browser.getDriver().findElement(By.xpath(loginTextFieldXPath));
+		WebElement passwordTextField = Browser.getDriver().findElement(By.xpath(passwordFieldXPath));
 		loginTextField.sendKeys(login);
 		passwordTextField.sendKeys(password);
 	}
@@ -81,6 +61,7 @@ public class LoginForm {
 	 * Click login button
 	 */
 	public void clickLoginButton() {
+		WebElement loginButton = Browser.getDriver().findElement(By.xpath(loginButtonXPath));
 		loginButton.click();
 	}
 }

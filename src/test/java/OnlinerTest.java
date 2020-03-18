@@ -1,12 +1,13 @@
 import driver.Browser;
-import driver.ChromeBrowser;
-import driver.FirefoxBrowser;
-import driver.IEBrowser;
+import driver.BrowserType;
+
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.DataProvider;
+
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import pages.*;
 
@@ -19,55 +20,53 @@ public class OnlinerTest {
 	/**
 	 * User login for tests
 	 */
-	private static final String login;
+	private String login;
 
 	/**
 	 * User password for tests
 	 */
-	private static final String password;
+	private String password;
 
 	/*
 	 * Fetching tests data
 	 */
-	static {
+	@BeforeTest
+	public void beforeTest() {
 		ResourceBundle testResources = ResourceBundle.getBundle("testResources");
 		login = testResources.getString("login");
 		password = testResources.getString("password");
+		final String browserType = testResources.getString("browser");
+		Browser.setBrowser(BrowserType.valueOf(browserType));
 	}
 
-	@DataProvider(name = "browserDataProvider")
-	Object[][] getBrowsers() {
-		return new Object[][]{
-			{new FirefoxBrowser()},
-			{new ChromeBrowser()},
-			{new IEBrowser()}
-		};
-	}
+	@Test
+	public void test1() {
+		WebDriver driver = Browser.getDriver();
+		// Setup browser
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
 
-	@Test(dataProvider = "browserDataProvider")
-	public void test1(Browser browser) {
-		browser.getDriver().manage().window().maximize();
-		browser.getDriver().manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
+		// Go to main page and validate that we unauthorized user
+		driver.get(OnlinerUnauthorizedMainPage.url);
+		OnlinerUnauthorizedMainPage onlinerUnauthorizedMainPage = new OnlinerUnauthorizedMainPage();
+		Assert.assertNotNull(onlinerUnauthorizedMainPage.getLoginFormButton(), "Unauthorized page should have 'Open login form' button");
 
-		// Go to main page and open login form.
-		// Successful constructing OnlinerUnauthorizedMainPage guarantees that page is loaded successfully
-		browser.getDriver().get(OnlinerUnauthorizedMainPage.url);
-		OnlinerUnauthorizedMainPage onlinerUnauthorizedMainPage = new OnlinerUnauthorizedMainPage(browser);
+		// Open login form, enter credentials and click login.
 		onlinerUnauthorizedMainPage.clickLoginFormButton();
-
-		// Enter credentials and click login.
-		LoginForm loginForm = new LoginForm(browser);
+		LoginForm loginForm = new LoginForm();
 		loginForm.writeCredentials(login, password);
 		loginForm.clickLoginButton();
 
 		// Wait until login form disappears
-		// Successful constructing OnlinerAuthorizedMainPage guarantees that user authorized successfully
-		WebDriverWait wait = new WebDriverWait(browser.getDriver(), 10);
+		WebDriverWait wait = new WebDriverWait(driver, 10);
 		wait.until(ExpectedConditions.stalenessOf(loginForm.getLoginFormBackground()));
-		new OnlinerAuthorizedMainPage(browser);
+
+		// Validate that we authorized user
+		OnlinerAuthorizedMainPage onlinerAuthorizedMainPage = new OnlinerAuthorizedMainPage();
+		Assert.assertNotNull(onlinerAuthorizedMainPage.getUnfoldUserMenuButton(), "Authorized page should have 'Open user menu' button");
 
 		// Get random section from popular sections list
-		PopularSectionsList popularSectionsList = new PopularSectionsList(browser);
+		PopularSectionsList popularSectionsList = new PopularSectionsList();
 		Random rand = new Random();
 		final int count = popularSectionsList.getList().size();
 		WebElement randomSection = popularSectionsList.getList().get(rand.nextInt(count));
@@ -75,19 +74,18 @@ public class OnlinerTest {
 
 		// Go to this section and compare its title and link text
 		randomSection.click();
-		ProductSectionPage sectionPage = new ProductSectionPage(browser);
-		Assert.assertEquals(linkText, sectionPage.sectionTitleText());
+		ProductSectionPage sectionPage = new ProductSectionPage();
+		Assert.assertEquals(linkText, sectionPage.sectionTitleText(), "Link and section text should match.");
 
 		// Go back to main page and logout
-		browser.getDriver().navigate().back();
-		OnlinerAuthorizedMainPage onlinerAuthorizedMainPage = new OnlinerAuthorizedMainPage(browser);
+		driver.navigate().back();
 		onlinerAuthorizedMainPage.waitUntilUserMenuIsVisible(60);
 		onlinerAuthorizedMainPage.clickUnfoldUserMenuButton();
 		onlinerAuthorizedMainPage.clickLogoutButton();
 
-		// Successful constructing OnlinerUnauthorizedMainPage guarantees that user unauthorized successfully
-		new OnlinerUnauthorizedMainPage(browser);
+		// Validate that we unauthorized user
+		Assert.assertNotNull(onlinerUnauthorizedMainPage.getLoginFormButton(), "Unauthorized page should have 'Open login form' button");
 
-		browser.quit();
+		driver.quit();
 	}
 }
