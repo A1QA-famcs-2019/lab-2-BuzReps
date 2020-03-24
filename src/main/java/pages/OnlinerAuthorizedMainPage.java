@@ -1,6 +1,10 @@
 package pages;
 
 import driver.Browser;
+import driver.ResourceManager;
+import elements.BaseElement;
+import elements.Link;
+import elements.Wait;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -13,59 +17,31 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  */
 public class OnlinerAuthorizedMainPage {
 
-	/**
-	 * XPath for user profile unfolding menu
-	 */
-	public static final String userMenuUnfoldButtonXpath = "//a[contains(@class, 'js-toggle-bar') and contains(@class, 'b-top-profile__preview')]";
-
-	/**
-	 * XPath for logout button
-	 */
-	public static final String logoutButtonXpath = "//div[@class='b-top-profile__header']//div[@class='b-top-profile__logout']//a[contains(@class, 'b-top-profile__link')]";
-
-	/**
-	 * Constructor
-	 */
-	public OnlinerAuthorizedMainPage() {
-	}
+	private static final Link unfoldUserMenuButton = new Link(By.xpath(ResourceManager.getLocatorValue("unfoldUserMenuButton")));
+	private static final Link logoutButton = new Link(By.xpath(ResourceManager.getLocatorValue("logoutButton")));
 
 	/**
 	 * Wait until unfold button is visible
-	 *
-	 * @param timeInSeconds Max amount of seconds to wait
 	 */
-	public void waitUntilUserMenuIsVisible(int timeInSeconds) {
-		WebDriverWait wait = new WebDriverWait(Browser.getDriver(), timeInSeconds);
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath(userMenuUnfoldButtonXpath)));
+	public void waitUntilUserMenuIsVisible() {
+		Wait.waitUntilVisible(unfoldUserMenuButton);
 	}
 
-	/**
-	 * Get 'unfold user menu' button
-	 *
-	 * @return Button element or null in case of failure.
-	 */
-	public WebElement getUnfoldUserMenuButton() {
-		try {
-			return Browser.getDriver().findElement(By.xpath(userMenuUnfoldButtonXpath));
-		} catch (Exception e) {
-			return null;
-		}
+	public boolean isUnfoldUserMenuButtonPresent() {
+		return unfoldUserMenuButton.isPresent();
 	}
 
 	/**
 	 * Click button that unfolds user profile
 	 */
 	public void clickUnfoldUserMenuButton() {
-		WebElement userMenuButton = Browser.getDriver().findElement(By.xpath(userMenuUnfoldButtonXpath));
-		userMenuButton.click();
+		unfoldUserMenuButton.click();
 	}
-
 
 	/**
 	 * Click logout button
 	 */
 	public void clickLogoutButton() {
-		WebElement logoutButton = Browser.getDriver().findElement(By.xpath(logoutButtonXpath));
 		logoutButton.click();
 	}
 

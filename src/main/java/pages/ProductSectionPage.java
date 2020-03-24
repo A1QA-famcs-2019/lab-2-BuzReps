@@ -1,33 +1,23 @@
 package pages;
 
-import driver.Browser;
+import driver.ResourceManager;
+import elements.BaseElement;
+import elements.Wait;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 
 /**
  * Class for interacting with section page
  */
 public class ProductSectionPage {
 
-	/**
-	 * Section title element xpath
-	 */
-	public final static String sectionTitleXpath = "//div[@class='schema-header']//*[@class='schema-header__title']";
+	private final static BaseElement sectionTitle = new BaseElement(By.xpath(ResourceManager.getLocatorValue("sectionTitle")));
 
-	/**
-	 * Constructor
-	 */
-	public ProductSectionPage() {
+	public String getTitleText() {
+		return sectionTitle.getText();
 	}
 
-	/**
-	 * Get section title text
-	 *
-	 * @return section title text
-	 */
-	public String sectionTitleText() {
-		WebElement sectionTitle = Browser.getDriver().findElement(By.xpath(sectionTitleXpath));
-		return sectionTitle.getText();
+	public void waitUntilTitleIsVisible() {
+		Wait.waitUntilVisible(sectionTitle);
 	}
 
 }

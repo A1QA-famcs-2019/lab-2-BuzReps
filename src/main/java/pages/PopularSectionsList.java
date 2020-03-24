@@ -1,42 +1,33 @@
 package pages;
 
 import driver.Browser;
+import driver.ResourceManager;
+import elements.Button;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 
-import java.util.List;
+import java.util.Random;
 
 /**
  * Class for interacting with onliner's main page's popular sections list
  */
 public class PopularSectionsList {
 
-	/**
-	 * XPath for popular section list elements
-	 */
-	private final static String itemsXpath = "//ul[contains(@class, 'project-navigation__list')]//a[contains(@class, 'project-navigation__link')]";
+	private final static String menuItemsXpath = ResourceManager.getLocatorValue("menuItemsXpath");
+	private final static String menuItemLinkSubElementXpath = ResourceManager.getLocatorValue("menuItemLinkSubElementXpath");
+	private final static String menuItemSignSubElementXpath = ResourceManager.getLocatorValue("menuItemSignSubElementXpath");
 
-	/**
-	 * Get List of elements of popular sections list
-	 *
-	 * @return List of elements of popular sections list
-	 */
-	public List<WebElement> getList() {
-		return Browser.getDriver().findElements(By.xpath(itemsXpath));
+	public int getRandomSectionIndex() {
+		final int listItemsCount = Browser.getDriver().findElements(By.xpath(menuItemsXpath)).size();
+		return new Random().nextInt(listItemsCount);
 	}
 
-	/**
-	 * Get section text
-	 *
-	 * @param section Section to fetch text from
-	 * @return Section Text
-	 */
-	public static String getSectionText(WebElement section) {
-		return section.findElement(By.xpath(".//span[@class='project-navigation__sign']")).getText();
+	public String getSectionText(int sectionIndex) {
+		String locator = menuItemsXpath + String.format("[%d]", sectionIndex) + menuItemLinkSubElementXpath + menuItemSignSubElementXpath;
+		return Browser.getDriver().findElement(By.xpath(locator)).getText();
 	}
 
-	/**
-	 * Constructor
-	 */
-	public PopularSectionsList() {}
+	public void clickSection(int sectionIndex) {
+		String locator = menuItemsXpath + String.format("[%d]", sectionIndex) + menuItemLinkSubElementXpath;
+		new Button(By.xpath(locator)).click();
+	}
 }
